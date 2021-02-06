@@ -9,3 +9,19 @@ VALUES('admin', '$2a$10$XURPShQNCsLjp1ESc2laoObo9QZDhxz73hJPaEv7/cBha4pk0AgP.', 
 INSERT INTO SKUSUARIOROL
 (ROLPK, USUARIOPK, ESTADO, FECHACREACION)
 VALUES(1, 1, true, current_timestamp);
+
+INSERT INTO SKTIPOPAGO
+(descripcionpago, estado, fechacreacion)
+VALUES ('TARJETA DE CREDITO', true, CURRENT_TIMESTAMP);
+
+INSERT INTO SKTIPOPAGO
+(descripcionpago, estado, fechacreacion)
+VALUES ('TRANSFERENCIA BANCARIA', true, CURRENT_TIMESTAMP);
+
+INSERT INTO  SKCLASIFICACION
+(NOMBRE, ESTADO, FECHACREACION)
+values ('DC Comics', true, current_timestamp);
+
+INSERT INTO  SKCLASIFICACION
+(NOMBRE, ESTADO, FECHACREACION)
+values ('Marvel', true, current_timestamp);

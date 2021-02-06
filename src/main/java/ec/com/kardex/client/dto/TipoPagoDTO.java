@@ -24,7 +24,7 @@ public class TipoPagoDTO extends AuditoriaDTO implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer tipoPagoPk;
 
-    @Column
+    @Column(name = "DESCRIPCIONPAGO")
     private String descripcionPago;
 
 }
