@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Transactional
@@ -78,6 +79,8 @@ public class KardexServicioImpl implements KardexServicio {
             if (articulo == null) {
                 throw new KardexExcepction("Los datos del articulo son obligatorios para crear el registro");
             }
+            articulo.setEstado(Boolean.TRUE);
+            articulo.setFechaCreacion(new Date());
             return articuloDao.insertarArticulo(articulo);
         } catch (HibernateException e) {
             throw new KardexExcepction("No fue posible registrar el articulo", e);

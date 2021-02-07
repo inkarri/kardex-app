@@ -1,5 +1,6 @@
 package ec.com.kardex.client.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,19 +28,24 @@ public class ArticuloDTO extends AuditoriaDTO implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer articuloPk;
 
-    @Column
+    @Column(name = "CLASIFICACIONPK")
     private Integer clasificacionPk;
 
+    @Column(name = "CODIGOBARRAS")
     private String codigoBarras;
 
+    @Column
     private String descripcion;
 
+    @Column
     private Double precio;
 
+    @Column
     private Integer existencia;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clasificacionPk", referencedColumnName = "clasificacionPk", insertable = false, updatable = false)
+    @JoinColumn(name = "CLASIFICACIONPK", referencedColumnName = "clasificacionPk", insertable = false, updatable = false)
     private ClasificacionDTO clasificacion;
 
 }

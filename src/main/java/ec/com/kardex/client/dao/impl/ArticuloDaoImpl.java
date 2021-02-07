@@ -24,6 +24,7 @@ public class ArticuloDaoImpl extends CommonsDao implements ArticuloDao {
         JPAQuery<ArticuloDTO> query = new JPAQuery<>(em);
         return query.from(articuloDTO)
                 .where(articuloDTO.estado.eq(Boolean.TRUE))
+                .orderBy(articuloDTO.fechaCreacion.desc())
                 .fetch();
     }
 
