@@ -59,7 +59,7 @@ public class DetallePedidoDaoImpl extends CommonsDao implements DetallePedidoDao
                         detallePedidoDTO.cantidad,
                         Projections.bean(PedidoDTO.class,
                                 pedidoDTO.codigoPedido,
-                                personaDTO.personaPk,
+                                pedidoDTO.pedidoPk,
                                 pedidoDTO.totalPedido,
                                 pedidoDTO.fechaCreacion,
                                 Projections.bean(TipoPagoDTO.class,
