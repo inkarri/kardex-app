@@ -37,4 +37,8 @@ public interface KardexServicio {
 
     void comprar(PedidoVO pedido);
 
+    List<DetallePedidoDTO> obtenerDetallesComprasPorUsuario(String userName);
+
+    List<PedidoDTO> obtenerPedidosPorUsuario(String userName);
+
 }

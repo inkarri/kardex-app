@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -194,5 +195,20 @@ public class KardexWebService {
         }
         return ResponseEntity.ok().headers(responseHeaders).build();
     }
+
+    @GetMapping(value = "/obtenerPedidosPorUsuario/{userName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PedidoDTO>> obtenerPedidosPorUsuario(@PathVariable String userName) {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        List<PedidoDTO> pedidos = Collections.emptyList();
+        try {
+            pedidos = kardexServicio.obtenerPedidosPorUsuario(userName);
+            responseHeaders.set(REPONSE_TYPE, "SUCCESS");
+        } catch (RuntimeException e) {
+            responseHeaders.set(REPONSE_TYPE, "ERROR");
+            responseHeaders.set("mes", e.getMessage());
+        }
+        return ResponseEntity.ok().headers(responseHeaders).body(pedidos);
+    }
+
 
 }

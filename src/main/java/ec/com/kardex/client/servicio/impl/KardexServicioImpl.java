@@ -29,6 +29,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Transactional
 @Service
@@ -184,21 +189,56 @@ public class KardexServicioImpl implements KardexServicio {
         validarDatosPedido(pedido);
         Integer personaPk = obtenerCodigoPersonaPorNombreUsuario(pedido.getUsername());
         PedidoDTO nuevoPedido = PedidoDTO.builder()
-                .codigoPedido("00001")
+                .codigoPedido(generarCodigo())
                 .personaPk(personaPk)
                 .totalPedido(calcularTotalPedido(pedido))
                 .tipoPagoPk(pedido.getTipoPagoPk())
                 .build();
-        crearPedido(nuevoPedido);
         agregarDatosAuditoria(Collections.singletonList(nuevoPedido));
+        crearPedido(nuevoPedido);
         crearDetallesPedido(generarDetallePedido(pedido, nuevoPedido.getPedidoPk()));
         actualizarExistenciasArticulos(pedido);
+    }
+
+    @Override
+    public List<DetallePedidoDTO> obtenerDetallesComprasPorUsuario(String userName) {
+        try {
+            if (userName == null || userName.trim().isEmpty()) {
+                throw new KardexExcepction("El nombre de usuario es obligatorio para obtener los pedidos asociados");
+            }
+            return detallePedidoDao.obtenerDetallesComprasPorUsuario(userName);
+        } catch (QueryException e) {
+            throw new KardexExcepction("No fue posible obtener datos del pedido", e);
+        }
+    }
+
+    @Override
+    public List<PedidoDTO> obtenerPedidosPorUsuario(String userName) {
+        List<DetallePedidoDTO> detallesPedido = obtenerDetallesComprasPorUsuario(userName);
+        Map<Integer, List<DetallePedidoDTO>> pedidos = detallesPedido.stream()
+                .collect(groupingBy(DetallePedidoDTO::getPedidoPk));
+        List<PedidoDTO> pedidosUsuario = new ArrayList<>();
+        pedidos.forEach((pedidoPk, detalePedido) -> {
+            PedidoDTO pedido = detalePedido.get(0).getPedido();
+            detalePedido.forEach(detalle -> detalle.setPedido(null));
+            pedido.setDetallesPedio(detalePedido);
+            pedidosUsuario.add(pedido);
+        });
+        return pedidosUsuario;
     }
 
     private void validarDatosPedido(PedidoVO pedido) {
         if (pedido == null) {
             throw new KardexExcepction("Los datos del pedido son obligatorios para realizar la compra");
         }
+    }
+
+    private String generarCodigo() {
+        Random random = new Random();
+        IntStream intStream = random.ints(10, 1, 7);
+        StringBuilder codigo = new StringBuilder();
+        intStream.forEach(codigo::append);
+        return codigo.toString();
     }
 
     private Double calcularTotalPedido(PedidoVO pedido) {

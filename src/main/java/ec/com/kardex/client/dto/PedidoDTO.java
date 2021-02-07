@@ -14,8 +14,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "SKPEDIDO")
@@ -52,5 +54,8 @@ public class PedidoDTO extends AuditoriaDTO implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tipoPagoPk", referencedColumnName = "tipoPagoPk", insertable = false, updatable = false)
     private TipoPagoDTO tipoPago;
+
+    @OneToMany(mappedBy = "pedido")
+    private List<DetallePedidoDTO> detallesPedio;
 
 }

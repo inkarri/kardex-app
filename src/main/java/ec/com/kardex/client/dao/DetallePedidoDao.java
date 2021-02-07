@@ -8,4 +8,6 @@ public interface DetallePedidoDao {
 
     void crearDetallesPedido(List<DetallePedidoDTO> detallesPedido);
 
+    List<DetallePedidoDTO> obtenerDetallesComprasPorUsuario(String userName);
+
 }
