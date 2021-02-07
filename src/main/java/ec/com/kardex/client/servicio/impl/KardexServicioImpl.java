@@ -166,4 +166,13 @@ public class KardexServicioImpl implements KardexServicio {
         }
     }
 
+    @Override
+    public List<ArticuloDTO> obtenerArticulosConExistencia() {
+        try {
+            return articuloDao.obtenerArticulosConExistencia();
+        } catch (QueryException e) {
+            throw new KardexExcepction("No fue posible obtener articulos con existencia.", e);
+        }
+    }
+
 }

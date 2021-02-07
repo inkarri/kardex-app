@@ -167,4 +167,18 @@ public class KardexWebService {
         return ResponseEntity.ok().headers(responseHeaders).body(tipos);
     }
 
+    @GetMapping(value = "/obtenerArticulosConExistencia", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ArticuloDTO>> obtenerArticulosConExistencia() {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        List<ArticuloDTO> articulos = Collections.emptyList();
+        try {
+            articulos = kardexServicio.obtenerArticulosConExistencia();
+            responseHeaders.set(REPONSE_TYPE, "SUCCESS");
+        } catch (RuntimeException e) {
+            responseHeaders.set(REPONSE_TYPE, "ERROR");
+            responseHeaders.set("mes", e.getMessage());
+        }
+        return ResponseEntity.ok().headers(responseHeaders).body(articulos);
+    }
+
 }

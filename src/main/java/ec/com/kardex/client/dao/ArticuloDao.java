@@ -12,4 +12,6 @@ public interface ArticuloDao {
 
     void crearArticulos(List<ArticuloDTO> articulos);
 
+    List<ArticuloDTO> obtenerArticulosConExistencia();
+
 }

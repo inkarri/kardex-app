@@ -36,4 +36,14 @@ public class ArticuloDaoImpl extends CommonsDao implements ArticuloDao {
         em.clear();
     }
 
+    @Override
+    public List<ArticuloDTO> obtenerArticulosConExistencia() {
+        JPAQuery<ArticuloDTO> query = new JPAQuery<>(em);
+        return query.from(articuloDTO)
+                .where(articuloDTO.estado.eq(Boolean.TRUE),
+                        articuloDTO.existencia.gt(0))
+                .orderBy(articuloDTO.codigoBarras.desc())
+                .fetch();
+    }
+
 }

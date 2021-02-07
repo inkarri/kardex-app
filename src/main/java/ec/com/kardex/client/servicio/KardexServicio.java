@@ -32,4 +32,6 @@ public interface KardexServicio {
 
     List<TipoPagoDao> obtenerTiposPago();
 
+    List<ArticuloDTO> obtenerArticulosConExistencia();
+
 }
