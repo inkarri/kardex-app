@@ -1,6 +1,9 @@
 package ec.com.kardex.client.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -18,6 +21,9 @@ import java.io.Serializable;
 @Table(name = "SKPEDIDO")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PedidoDTO extends AuditoriaDTO implements Serializable {
 
     private static final long serialVersionUID = 2546520950297617689L;
@@ -35,6 +41,9 @@ public class PedidoDTO extends AuditoriaDTO implements Serializable {
 
     @Column
     private String codigoPedido;
+
+    @Column
+    private Double totalPedido;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personaPk", referencedColumnName = "personaPk", insertable = false, updatable = false)

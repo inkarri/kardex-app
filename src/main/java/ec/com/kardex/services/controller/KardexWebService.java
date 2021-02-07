@@ -9,6 +9,7 @@ import ec.com.kardex.client.dto.PersonaDTO;
 import ec.com.kardex.client.dto.UsuarioDTO;
 import ec.com.kardex.client.exception.KardexExcepction;
 import ec.com.kardex.client.servicio.KardexServicio;
+import ec.com.kardex.client.vo.PedidoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpHeaders;
@@ -179,6 +180,19 @@ public class KardexWebService {
             responseHeaders.set("mes", e.getMessage());
         }
         return ResponseEntity.ok().headers(responseHeaders).body(articulos);
+    }
+
+    @PostMapping(value = "/comprar")
+    public ResponseEntity<Void> comprar(@RequestBody PedidoVO pedido) {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        try {
+            kardexServicio.comprar(pedido);
+            responseHeaders.set(REPONSE_TYPE, "SUCCESS");
+        } catch (KardexExcepction e) {
+            responseHeaders.set(REPONSE_TYPE, "ERROR");
+            responseHeaders.set("mes", e.getMessage());
+        }
+        return ResponseEntity.ok().headers(responseHeaders).build();
     }
 
 }

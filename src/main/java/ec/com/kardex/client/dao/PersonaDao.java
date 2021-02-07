@@ -6,4 +6,6 @@ public interface PersonaDao {
 
     void crearPersona(PersonaDTO persona);
 
+    Integer obtenerCodigoPersonaPorNombreUsuario(String userName);
+
 }

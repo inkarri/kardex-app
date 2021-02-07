@@ -6,6 +6,10 @@ INSERT INTO SKUSUARIO
 (NOMBREUSUARIO, PASSWORD, ESTADO, FECHACREACION)
 VALUES('admin', '$2a$10$XURPShQNCsLjp1ESc2laoObo9QZDhxz73hJPaEv7/cBha4pk0AgP.', true, current_timestamp);
 
+INSERT INTO SKPERSONA
+(USUARIOPK, NOMBRES, APELLIDOS, MAIL, DIRECCION, ESTADO, FECHACREACION)
+values (1, 'Carl', 'Sagan', 'inkarri.programmer@gmail.com', 'Quitumbe', true, current_timestamp);
+
 INSERT INTO SKUSUARIOROL
 (ROLPK, USUARIOPK, ESTADO, FECHACREACION)
 VALUES(1, 1, true, current_timestamp);

@@ -1,6 +1,7 @@
 package ec.com.kardex.client.dao.impl;
 
 import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 import ec.com.kardex.client.dao.ArticuloDao;
 import ec.com.kardex.client.dao.CommonsDao;
 import ec.com.kardex.client.dto.ArticuloDTO;
@@ -44,6 +45,14 @@ public class ArticuloDaoImpl extends CommonsDao implements ArticuloDao {
                         articuloDTO.existencia.gt(0))
                 .orderBy(articuloDTO.codigoBarras.desc())
                 .fetch();
+    }
+
+    @Override
+    public void actualizaExistencia(ArticuloDTO articulo) {
+        JPAUpdateClause update = new JPAUpdateClause(em, articuloDTO);
+        update.set(articuloDTO.existencia, articulo.getExistencia())
+                .where(articuloDTO.articuloPk.eq(articulo.getArticuloPk()))
+                .execute();
     }
 
 }

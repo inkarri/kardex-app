@@ -1,7 +1,10 @@
 package ec.com.kardex.client.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -19,6 +22,9 @@ import java.io.Serializable;
 @Table(name = "SKARTICULO")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ArticuloDTO extends AuditoriaDTO implements Serializable {
 
     private static final long serialVersionUID = -7411091658379483838L;

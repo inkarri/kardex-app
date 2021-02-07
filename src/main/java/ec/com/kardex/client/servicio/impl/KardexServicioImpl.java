@@ -9,6 +9,7 @@ import ec.com.kardex.client.dao.PersonaDao;
 import ec.com.kardex.client.dao.TipoPagoDao;
 import ec.com.kardex.client.dao.UsuarioDao;
 import ec.com.kardex.client.dto.ArticuloDTO;
+import ec.com.kardex.client.dto.AuditoriaDTO;
 import ec.com.kardex.client.dto.ClasificacionDTO;
 import ec.com.kardex.client.dto.DetallePedidoDTO;
 import ec.com.kardex.client.dto.PedidoDTO;
@@ -16,12 +17,16 @@ import ec.com.kardex.client.dto.PersonaDTO;
 import ec.com.kardex.client.dto.UsuarioDTO;
 import ec.com.kardex.client.exception.KardexExcepction;
 import ec.com.kardex.client.servicio.KardexServicio;
+import ec.com.kardex.client.vo.DetallePedidoVO;
+import ec.com.kardex.client.vo.PedidoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -79,8 +84,7 @@ public class KardexServicioImpl implements KardexServicio {
             if (articulo == null) {
                 throw new KardexExcepction("Los datos del articulo son obligatorios para crear el registro");
             }
-            articulo.setEstado(Boolean.TRUE);
-            articulo.setFechaCreacion(new Date());
+            agregarDatosAuditoria(Collections.singletonList(articulo));
             return articuloDao.insertarArticulo(articulo);
         } catch (HibernateException e) {
             throw new KardexExcepction("No fue posible registrar el articulo", e);
@@ -172,6 +176,86 @@ public class KardexServicioImpl implements KardexServicio {
             return articuloDao.obtenerArticulosConExistencia();
         } catch (QueryException e) {
             throw new KardexExcepction("No fue posible obtener articulos con existencia.", e);
+        }
+    }
+
+    @Override
+    public void comprar(PedidoVO pedido) {
+        validarDatosPedido(pedido);
+        Integer personaPk = obtenerCodigoPersonaPorNombreUsuario(pedido.getUsername());
+        PedidoDTO nuevoPedido = PedidoDTO.builder()
+                .codigoPedido("00001")
+                .personaPk(personaPk)
+                .totalPedido(calcularTotalPedido(pedido))
+                .tipoPagoPk(pedido.getTipoPagoPk())
+                .build();
+        crearPedido(nuevoPedido);
+        agregarDatosAuditoria(Collections.singletonList(nuevoPedido));
+        crearDetallesPedido(generarDetallePedido(pedido, nuevoPedido.getPedidoPk()));
+        actualizarExistenciasArticulos(pedido);
+    }
+
+    private void validarDatosPedido(PedidoVO pedido) {
+        if (pedido == null) {
+            throw new KardexExcepction("Los datos del pedido son obligatorios para realizar la compra");
+        }
+    }
+
+    private Double calcularTotalPedido(PedidoVO pedido) {
+        return pedido.getDetallePedido().stream()
+                .mapToDouble(articulo -> articulo.getPrecio() * articulo.getCantidad())
+                .sum();
+    }
+
+    private List<DetallePedidoDTO> generarDetallePedido(PedidoVO pedido, Integer codigoPedido) {
+        List<DetallePedidoDTO> detalles = new ArrayList<>();
+        pedido.getDetallePedido().forEach(detalle -> detalles.add(DetallePedidoDTO
+                .builder()
+                .pedidoPk(codigoPedido)
+                .cantidad(detalle.getCantidad())
+                .articuloPk(detalle.getArticuloPk())
+                .build())
+        );
+        agregarDatosAuditoria(detalles);
+        return detalles;
+    }
+
+    private Integer obtenerCodigoPersonaPorNombreUsuario(String userName) {
+        try {
+            if (userName == null || userName.trim().isEmpty()) {
+                throw new KardexExcepction("El nombre de usuario es obligatorio");
+            }
+            return personaDao.obtenerCodigoPersonaPorNombreUsuario(userName);
+        } catch (QueryException e) {
+            throw new KardexExcepction("No fue posible obtener el codigo de persona", e);
+        }
+    }
+
+    private void actualizarExistenciasArticulos(PedidoVO pedido) {
+        List<ArticuloDTO> articulos = new ArrayList<>();
+        pedido.getDetallePedido().forEach(detalle -> articulos.add(ArticuloDTO
+                .builder()
+                .articuloPk(detalle.getArticuloPk())
+                .existencia(detalle.getExistencia() - detalle.getCantidad())
+                .build()));
+        articulos.forEach(this::actualizaExistencia);
+    }
+
+    private void agregarDatosAuditoria(List<? extends AuditoriaDTO> datos) {
+        datos.forEach(dato -> {
+            dato.setEstado(Boolean.TRUE);
+            dato.setFechaCreacion(new Date());
+        });
+    }
+
+    public void actualizaExistencia(ArticuloDTO articulo) {
+        try {
+            if (articulo == null) {
+                throw new KardexExcepction("Los datos del articulo son obligatorios para realizar la actualizacion.");
+            }
+            articuloDao.actualizaExistencia(articulo);
+        } catch (HibernateException e) {
+            throw new KardexExcepction("No fue posible actualizar la existencia de los articulos", e);
         }
     }
 

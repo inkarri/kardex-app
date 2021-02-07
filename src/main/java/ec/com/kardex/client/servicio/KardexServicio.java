@@ -7,6 +7,7 @@ import ec.com.kardex.client.dto.DetallePedidoDTO;
 import ec.com.kardex.client.dto.PedidoDTO;
 import ec.com.kardex.client.dto.PersonaDTO;
 import ec.com.kardex.client.dto.UsuarioDTO;
+import ec.com.kardex.client.vo.PedidoVO;
 
 import java.util.List;
 
@@ -33,5 +34,7 @@ public interface KardexServicio {
     List<TipoPagoDao> obtenerTiposPago();
 
     List<ArticuloDTO> obtenerArticulosConExistencia();
+
+    void comprar(PedidoVO pedido);
 
 }

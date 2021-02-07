@@ -27,7 +27,7 @@ public class PersonaDTO extends AuditoriaDTO implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer personaPk;
 
-    @Column
+    @Column(name = "USUARIOPK")
     private Integer usuarioPk;
 
     @Column(unique = true)
@@ -46,7 +46,7 @@ public class PersonaDTO extends AuditoriaDTO implements Serializable {
     private String direccion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuarioPk", referencedColumnName = "usuarioPk", insertable = false, updatable = false)
+    @JoinColumn(name = "USUARIOPK", referencedColumnName = "usuarioPk", insertable = false, updatable = false)
     private UsuarioDTO usuario;
 
 }

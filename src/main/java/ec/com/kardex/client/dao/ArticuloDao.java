@@ -14,4 +14,6 @@ public interface ArticuloDao {
 
     List<ArticuloDTO> obtenerArticulosConExistencia();
 
+    void actualizaExistencia(ArticuloDTO articulo);
+
 }
